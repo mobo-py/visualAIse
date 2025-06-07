@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Visualaise</title>
+  <link rel="icon" type="image/x-icon" href="/static/watermark.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+  <style>
+    /* Your existing CSS unchanged */
+    :root {
+      --bgcolor: #1a1a1a;
+      --lightgray: #505153;
+      --darkgray: #2a2a2a;
+      --textcolor: #b6b6b6;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      font-family: 'Lexend', sans-serif;
+      background-color: var(--bgcolor);
+      color: var(--textcolor);
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    #content {
+      flex: 1;
+    }
+
+    footer {
+      background-color: #101010;
+      color: var(--textcolor);
+      padding: 15px 10px;
+      text-align: center;
+      user-select: text;
+    }
+
+    footer .social-icons {
+      margin-top: 8px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 24px;
+      color: var(--textcolor);
+      cursor: pointer;
+      flex-wrap: wrap;
+    }
+    footer .social-icons a {
+      color: var(--textcolor);
+      transition: color 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+    footer .social-icons a:hover {
+      color: var(--lightgray);
+    }
+
+    .logo {
+      display: block;
+      margin: 30px auto;
+      width: 640px;
+    }
+
+    #promptArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .PromptGroup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #promptInput {
+      resize: none;
+      width: 577.5px;
+      height: 100px;
+      font-family: 'Lexend', sans-serif;
+      font-size: 16px;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background-color: var(--darkgray);
+      color: var(--textcolor);
+    }
+
+    #promptButton {
+      height: 50px;
+      width: 600px;
+      font-family: 'Lexend', sans-serif;
+    }
+
+    .Button {
+      font-size: 24px;
+      font-weight: 650;
+      color: var(--textcolor);
+      border: 2px solid var(--darkgray);
+      border-radius: 10px;
+      background-color: var(--darkgray);
+      text-align: center;
+      transition: 0.2s ease-out;
+      cursor: pointer;
+    }
+
+    .Button:hover {
+      background-color: #2e2e2e;
+    }
+
+    .Button:active {
+      transform: scale(0.98);
+    }
+
+    #promptInput:focus {
+      outline: none;
+    }
+
+    #loader {
+      display: none;
+      margin-top: 20px;
+      width: 600px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--darkgray);
+      position: relative;
+      height: 20px;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(270deg, #818181, var(--lightgray), #bbbbbb);
+      background-size: 600% 600%;
+      animation: gradientShift 3s ease infinite;
+      border-radius: 10px;
+      transition: width 0.3s ease-in-out;
+    }
+
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    #percentageText {
+      display: none;
+      text-align: center;
+      color: var(--lightgray);
+      font-size: 16px;
+      margin-top: 5px;
+      user-select: none;
+    }
+
+    #history {
+      max-width: 650px;
+      margin: 0 auto 50px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      padding: 0 10px;
+      user-select: text;
+    }
+
+    .result-item {
+      background-color: var(--darkgray);
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 0 10px #00000055;
+      user-select: text;
+    }
+
+    .result-item img {
+      max-width: 100%;
+      border-radius: 10px;
+      display: block;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .result-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--textcolor);
+      font-size: 14px;
+      font-weight: 500;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .prompt-text {
+      text-align: left;
+      flex: 1;
+      word-break: break-word;
+      user-select: text;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      color: var(--textcolor);
+      font-size: 18px;
+      user-select: none;
+    }
+
+    .result-actions button,
+    .result-actions a {
+      background: none;
+      border: none;
+      color: var(--textcolor);
+      cursor: pointer;
+      font-size: 22px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s ease;
+      text-decoration: none;
+    }
+
+    .result-actions button:hover,
+    .result-actions a:hover {
+      color: var(--lightgray);
+    }
+
+    .result-actions span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      user-select: none;
+    }
+
+    .generation-time {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--lightgray);
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="content">
+    <img src="/static/logo.png" alt="logo" class="logo" />
+
+    <div id="promptArea">
+      <div class="PromptGroup">
+        <textarea id="promptInput" placeholder="Enter your prompt here..."></textarea>
+        <button id="promptButton" class="Button">Generate Image</button>
+      </div>
+
+      <div id="loader">
+        <div id="progressBar"></div>
+      </div>
+      <p id="percentageText">0%</p>
+    </div>
+
+    <div id="history"></div>
+  </div>
+
+  <footer>
+    <h1>Mohamed Boualamallah</h1>
+    <div class="social-icons">
+      <a href="https://github.com/mobo-py" target="_blank" title="GitHub" aria-label="GitHub"><i class="bx bxl-github"></i></a>
+      <a href="mailto:mobopersonal@gmail.com" title="Email" aria-label="Email"><i class="bx bx-envelope"></i></a>
+      <a href="tel:+97451316159" title="Phone" aria-label="Phone"><i class="bx bx-phone"></i></a>
+      <a href="https://instagram.com/mxb_lm" target="_blank" title="Instagram" aria-label="Instagram"><i class="bx bxl-instagram"></i></a>
+    </div>
+    <br />
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const button = document.getElementById("promptButton");
+      const loader = document.getElementById("loader");
+      const progressBar = document.getElementById("progressBar");
+      const percentageText = document.getElementById("percentageText");
+      const history = document.getElementById("history");
+      const promptInput = document.getElementById("promptInput");
+
+      let pollingInterval = null;
+      let startTime = null;
+      let displayedProgress = 0;
+
+      button.addEventListener("click", async () => {
+        const prompt = promptInput.value.trim();
+        if (!prompt) return;
+
+        // Reset progress bar and start time
+        displayedProgress = 0;
+        progressBar.style.width = "0%";
+        percentageText.textContent = "0%";
+        percentageText.style.display = "block";
+        loader.style.display = "block";
+        button.disabled = true;
+        startTime = Date.now();
+
+        try {
+          // Start generation and get task_id
+          const response = await fetch("/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to start generation.");
+          }
+
+          const data = await response.json();
+          if (!data.task_id) {
+            throw new Error("No task ID received.");
+          }
+
+          const taskId = data.task_id;
+
+          // Poll progress every second
+          pollingInterval = setInterval(async () => {
+            try {
+              const progressResponse = await fetch(`/progress?task_id=${taskId}`);
+              if (!progressResponse.ok) {
+                throw new Error("Failed to get progress.");
+              }
+              const progressData = await progressResponse.json();
+
+              if (progressData.error) {
+                throw new Error(progressData.error);
+              }
+
+              const backendProgress = progressData.progress || 0;
+              const imageUrl = progressData.image_url || null;
+
+              // Smoothly increment displayedProgress toward backendProgress, but never backward
+              if (backendProgress > displayedProgress) {
+                // Cap displayed progress to max 95% until 100% received
+                const targetProgress =
+                  backendProgress < 100 ? Math.min(backendProgress, 95) : 100;
+
+                const increment = (targetProgress - displayedProgress) / 3; // smooth increments over ~3 polls
+                displayedProgress += increment;
+                if (displayedProgress > targetProgress) displayedProgress = targetProgress;
+              }
+
+              // Update UI
+              progressBar.style.width = displayedProgress + "%";
+              percentageText.textContent = Math.floor(displayedProgress) + "%";
+
+              if (backendProgress >= 100 && imageUrl) {
+                clearInterval(pollingInterval);
+                displayedProgress = 100;
+                progressBar.style.width = "100%";
+                percentageText.textContent = "100%";
+
+                // Calculate elapsed time
+                const elapsedSeconds = ((Date.now() - startTime) / 1000).toFixed(1);
+
+                addResultItem(prompt, imageUrl, elapsedSeconds);
+
+                loader.style.display = "none";
+                percentageText.style.display = "none";
+                button.disabled = false;
+                promptInput.value = "";
+              }
+            } catch (err) {
+              clearInterval(pollingInterval);
+              alert("Error during progress polling: " + err.message);
+              loader.style.display = "none";
+              percentageText.style.display = "none";
+              button.disabled = false;
+            }
+          }, 1000);
+        } catch (err) {
+          alert("Error starting generation: " + err.message);
+          loader.style.display = "none";
+          percentageText.style.display = "none";
+          button.disabled = false;
+        }
+      });
+
+      function addResultItem(prompt, imageUrl, elapsedSeconds) {
+        const div = document.createElement("div");
+        div.className = "result-item";
+
+        div.innerHTML = `
+          <img src="${imageUrl}" alt="Generated Image" loading="lazy" />
+          <div class="result-info">
+            <span class="prompt-text">${escapeHtml(prompt)}</span>
+            <div class="result-actions">
+              <button class="copy-btn" title="Copy Prompt"><i class='bx bx-copy'></i></button>
+              <button class="fullscreen-btn" title="Fullscreen"><i class='bx bx-fullscreen'></i></button>
+              <button class="download-btn" title="Download"><i class='bx bx-download'></i></button>
+            </div>
+          </div>
+          <div class="generation-time">Generated in ${elapsedSeconds} seconds</div>
+        `;
+
+        // Attach event listeners to buttons
+        const copyBtn = div.querySelector(".copy-btn");
+        copyBtn.addEventListener("click", () => {
+          navigator.clipboard.writeText(prompt).then(() => {
+            copyBtn.title = "Copied!";
+            setTimeout(() => (copyBtn.title = "Copy Prompt"), 1500);
+          });
+        });
+
+        const fullscreenBtn = div.querySelector(".fullscreen-btn");
+        fullscreenBtn.addEventListener("click", () => {
+          const img = div.querySelector("img");
+          if (img.requestFullscreen) {
+            img.requestFullscreen();
+          } else if (img.webkitRequestFullscreen) { /* Safari */
+            img.webkitRequestFullscreen();
+          } else if (img.msRequestFullscreen) { /* IE11 */
+            img.msRequestFullscreen();
+          }
+        });
+
+        const downloadBtn = div.querySelector(".download-btn");
+        downloadBtn.addEventListener("click", () => {
+          const a = document.createElement("a");
+          a.href = imageUrl;
+          a.download = "visualaise-image.png";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
+
+        history.prepend(div);
+      }
+
+      // Simple escape function to avoid HTML injection in prompt display
+      function escapeHtml(text) {
+        const map = {
+          '&': "&amp;",
+          '<': "&lt;",
+          '>': "&gt;",
+          '"': "&quot;",
+          "'": "&#039;"
+        };
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+      }
+    });
+  </script>
+
+<script>
+  // New background floaters using bgimg/img_1.webp to img_20.webp
+  const bgImages = Array.from({ length: 20 }, (_, i) => `/static/bgimgs/img_${i + 1}.webp`);
+
+  function createFloatingImage() {
+    const img = document.createElement("img");
+    img.src = bgImages[Math.floor(Math.random() * bgImages.length)];
+    img.className = "falling-image";
+    img.style.left = `${Math.random() * 100}vw`;
+    img.style.top = `-${Math.random() * 50 + 50}px`;
+    img.style.width = "50px";
+    img.style.height = "50px";
+    img.style.animationDuration = `${6 + Math.random() * 4}s`;
+    img.style.opacity = Math.random() * 0.5 + 0.3;
+    document.getElementById("fallingContainer").appendChild(img);
+
+    setTimeout(() => img.remove(), 12000);
+  }
+
+  setInterval(createFloatingImage, 1000);
+</script>
+
+</body>
+</html>
