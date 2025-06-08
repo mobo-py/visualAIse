@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Visualaise</title>
+  <title>visualAIse</title>
   <link rel="icon" type="image/x-icon" href="/static/watermark.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,12 +17,14 @@
       --lightgray: #505153;
       --darkgray: #2a2a2a;
       --textcolor: #b6b6b6;
+      --footer: #101010;
     }
 
     html,
     body {
       height: 100%;
       margin: 0;
+      transition: 0.2s ease-out;
     }
 
     body {
@@ -35,6 +37,7 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      transition: 0.2s ease-out;
     }
 
     #content {
@@ -42,7 +45,7 @@
     }
 
     footer {
-      background-color: #101010;
+      background-color: var(--footer);
       color: var(--textcolor);
       padding: 15px 10px;
       text-align: center;
@@ -76,6 +79,10 @@
       margin: 30px auto;
       width: 90%;
       max-width: 600px;
+      font-weight: 900;
+      color: var(--textcolor);
+      font-size: 110px;
+      padding: 0 auto;
     }
 
     #promptArea {
@@ -127,7 +134,7 @@
     }
 
     .Button:hover {
-      background-color: #2e2e2e;
+      background-color: var(--bgcolor);
     }
 
     .Button:active {
@@ -291,14 +298,47 @@
       .generation-time {
         font-size: 12px;
       }
+    
     }
+
+    /* Toggle button styling */
+#modeToggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 26px;
+  color: var(--textcolor);
+  cursor: pointer;
+  z-index: 1000;
+  transition: color 0.3s ease;
+}
+#modeToggle:hover {
+  color: var(--lightgray);
+}
+
+/* Light mode overrides */
+body.light-mode {
+  --bgcolor: #e5e5e5;      /* Light background to contrast dark text */
+  --lightgray: #b6b6b6;    /* Previously text color, now light gray shade */
+  --darkgray: #cccccc;     /* Softer version of lightgray for UI elements */
+  --textcolor: #1a1a1a;    /* Inverted from dark bgcolor for clear text */
+  --footer: #5f5f5f;
+
+  background-color: var(--bgcolor);
+  color: var(--textcolor);
+}
 
 
   </style>
 </head>
 <body>
+  <!-- Mode Toggle Icon -->
+<div id="modeToggle" title="Toggle Dark/Light Mode">
+  <i class='bx bxs-sun'></i>
+</div>
+
   <div id="content">
-    <img src="/static/logo.png" alt="logo" class="logo" />
+    <h1 class="logo">visual<strong style="color: var(--lightgray);">AI</strong>se</h1>
 
     <div id="promptArea">
       <div class="PromptGroup">
@@ -499,26 +539,17 @@
     });
   </script>
 
+
 <script>
-  // New background floaters using bgimg/img_1.webp to img_20.webp
-  const bgImages = Array.from({ length: 20 }, (_, i) => `/static/bgimgs/img_${i + 1}.webp`);
+  const modeToggle = document.getElementById("modeToggle");
+  const icon = modeToggle.querySelector("i");
+  const body = document.body;
 
-  function createFloatingImage() {
-    const img = document.createElement("img");
-    img.src = bgImages[Math.floor(Math.random() * bgImages.length)];
-    img.className = "falling-image";
-    img.style.left = `${Math.random() * 100}vw`;
-    img.style.top = `-${Math.random() * 50 + 50}px`;
-    img.style.width = "50px";
-    img.style.height = "50px";
-    img.style.animationDuration = `${6 + Math.random() * 4}s`;
-    img.style.opacity = Math.random() * 0.5 + 0.3;
-    document.getElementById("fallingContainer").appendChild(img);
-
-    setTimeout(() => img.remove(), 12000);
-  }
-
-  setInterval(createFloatingImage, 1000);
+  // Toggle mode and icon
+  modeToggle.addEventListener("click", () => {
+    body.classList.toggle("light-mode");
+    icon.className = body.classList.contains("light-mode") ? "bx bxs-moon" : "bx bxs-sun";
+  });
 </script>
 
 </body>
