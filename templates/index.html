@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>visualAIse</title>
+  <title>Visualaise</title>
   <link rel="icon" type="image/x-icon" href="/static/watermark.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,7 +11,6 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 
   <style>
-    /* Your existing CSS unchanged */
     :root {
       --bgcolor: #1a1a1a;
       --lightgray: #505153;
@@ -25,23 +24,24 @@
       height: 100%;
       margin: 0;
       transition: 0.2s ease-out;
-    }
-
-    body {
       font-family: 'Lexend', sans-serif;
       background-color: var(--bgcolor);
       color: var(--textcolor);
-      margin: 0;
-      padding: 0;
       user-select: none;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      transition: 0.2s ease-out;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+
+    *, *::before, *::after {
+      box-sizing: inherit;
     }
 
     #content {
       flex: 1;
+      padding: 0 15px;
     }
 
     footer {
@@ -77,12 +77,12 @@
     .logo {
       display: block;
       margin: 30px auto;
-      width: 90%;
+      width: 100%;
       max-width: 600px;
       font-weight: 900;
       color: var(--textcolor);
       font-size: 110px;
-      padding: 0 auto;
+      text-align: center;
     }
 
     #promptArea {
@@ -90,19 +90,20 @@
       flex-direction: column;
       align-items: center;
       margin-bottom: 30px;
+      padding: 0 10px;
     }
 
     .PromptGroup {
+      width: 100%;
+      max-width: 600px;
       display: flex;
       flex-direction: column;
-      align-items: center;
       gap: 10px;
     }
 
     #promptInput {
       resize: none;
-      width: 275%;
-      max-width: 600px;
+      width: 100%;
       height: 100px;
       font-family: 'Lexend', sans-serif;
       font-size: 16px;
@@ -115,9 +116,7 @@
 
     #promptButton {
       height: 50px;
-      
-      width: 275%;
-      max-width: 600px;
+      width: 100%;
       font-family: 'Lexend', sans-serif;
     }
 
@@ -148,7 +147,8 @@
     #loader {
       display: none;
       margin-top: 20px;
-      width: 600px;
+      width: 100%;
+      max-width: 600px;
       border-radius: 10px;
       overflow: hidden;
       background: var(--darkgray);
@@ -167,15 +167,9 @@
     }
 
     @keyframes gradientShift {
-      0% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-      100% {
-        background-position: 0% 50%;
-      }
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     #percentageText {
@@ -260,13 +254,6 @@
       color: var(--lightgray);
     }
 
-    .result-actions span {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      user-select: none;
-    }
-
     .generation-time {
       margin-top: 6px;
       font-size: 13px;
@@ -274,20 +261,19 @@
       user-select: none;
     }
 
-    img, textarea, button {
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-
-    @media (max-width: 480px) {
-      .Button {
-        font-size: 18px;
+    @media (max-width: 768px) {
+      .logo {
+        font-size: 60px;
         padding: 10px;
       }
 
       #promptInput {
         font-size: 14px;
         height: 80px;
+      }
+
+      .Button {
+        font-size: 20px;
       }
 
       .result-actions {
@@ -298,44 +284,38 @@
       .generation-time {
         font-size: 12px;
       }
-    
     }
 
-    /* Toggle button styling */
-#modeToggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  font-size: 26px;
-  color: var(--textcolor);
-  cursor: pointer;
-  z-index: 1000;
-  transition: color 0.3s ease;
-}
-#modeToggle:hover {
-  color: var(--lightgray);
-}
+    #modeToggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 26px;
+      color: var(--textcolor);
+      cursor: pointer;
+      z-index: 1000;
+      transition: color 0.3s ease;
+    }
+    #modeToggle:hover {
+      color: var(--lightgray);
+    }
 
-/* Light mode overrides */
-body.light-mode {
-  --bgcolor: #e5e5e5;      /* Light background to contrast dark text */
-  --lightgray: #b6b6b6;    /* Previously text color, now light gray shade */
-  --darkgray: #cccccc;     /* Softer version of lightgray for UI elements */
-  --textcolor: #1a1a1a;    /* Inverted from dark bgcolor for clear text */
-  --footer: #5f5f5f;
-
-  background-color: var(--bgcolor);
-  color: var(--textcolor);
-}
-
-
+    body.light-mode {
+      --bgcolor: #e5e5e5;
+      --lightgray: #b6b6b6;
+      --darkgray: #cccccc;
+      --textcolor: #1a1a1a;
+      --footer: #5f5f5f;
+      background-color: var(--bgcolor);
+      color: var(--textcolor);
+    }
   </style>
 </head>
+
 <body>
-  <!-- Mode Toggle Icon -->
-<div id="modeToggle" title="Toggle Dark/Light Mode">
-  <i class='bx bxs-sun'></i>
-</div>
+  <div id="modeToggle" title="Toggle Dark/Light Mode">
+    <i class='bx bxs-sun'></i>
+  </div>
 
   <div id="content">
     <h1 class="logo">visual<strong style="color: var(--lightgray);">AI</strong>se</h1>
@@ -345,10 +325,7 @@ body.light-mode {
         <textarea id="promptInput" placeholder="Enter your prompt here..."></textarea>
         <button id="promptButton" class="Button">Generate Image</button>
       </div>
-
-      <div id="loader">
-        <div id="progressBar"></div>
-      </div>
+      <div id="loader"><div id="progressBar"></div></div>
       <p id="percentageText">0%</p>
     </div>
 
@@ -358,13 +335,14 @@ body.light-mode {
   <footer>
     <h1>Mohamed Boualamallah</h1>
     <div class="social-icons">
-      <a href="https://github.com/mobo-py" target="_blank" title="GitHub" aria-label="GitHub"><i class="bx bxl-github"></i></a>
-      <a href="mailto:mobopersonal@gmail.com" title="Email" aria-label="Email"><i class="bx bx-envelope"></i></a>
-      <a href="tel:+97451316159" title="Phone" aria-label="Phone"><i class="bx bx-phone"></i></a>
-      <a href="https://instagram.com/mxb_lm" target="_blank" title="Instagram" aria-label="Instagram"><i class="bx bxl-instagram"></i></a>
+      <a href="https://github.com/mobo-py" target="_blank"><i class="bx bxl-github"></i></a>
+      <a href="mailto:mobopersonal@gmail.com"><i class="bx bx-envelope"></i></a>
+      <a href="tel:+97451316159"><i class="bx bx-phone"></i></a>
+      <a href="https://instagram.com/mxb_lm" target="_blank"><i class="bx bxl-instagram"></i></a>
     </div>
     <br />
   </footer>
+
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
