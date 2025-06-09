@@ -93,8 +93,8 @@ def generate_image():
         data = request.get_json()
         prompt = data.get("prompt", "").strip()
         resolution = data.get("resolution", "1024x1024")
-        guidance_scale = float(data.get("guidance_scale", 7.5))
-        steps = int(data.get("num_inference_steps", 50))
+        guidance_scale = float(data.get("guidance_scale", 10))
+        steps = int(data.get("num_inference_steps", 70))
         shift = int(data.get("shift", 0))
 
         if not prompt:
@@ -137,4 +137,3 @@ if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True, threaded=True)
-
