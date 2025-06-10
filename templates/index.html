@@ -309,6 +309,279 @@
       background-color: var(--bgcolor);
       color: var(--textcolor);
     }
+
+    /* New quality presets styles */
+    .quality-presets {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      width: 100%;
+      max-width: 600px;
+    }
+    
+    .quality-preset {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--darkgray);
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      background-color: var(--darkgray);
+      color: var(--textcolor);
+    }
+    
+    .quality-preset:hover {
+      border-color: var(--lightgray);
+    }
+    
+    .quality-preset.selected {
+      background-color: var(--lightgray);
+      color: var(--bgcolor);
+      border-color: var(--lightgray);
+    }
+    
+    .advanced-options {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: max-height 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
+  margin-top: 15px;
+  padding: 0 15px;
+  border: 1px solid var(--darkgray);
+  border-radius: 10px;
+  background-color: var(--darkgray);
+  width: 100%;
+  max-width: 600px;
+  pointer-events: none;
+}
+    
+    .advanced-toggle {
+      background: none;
+      border: none;
+      color: var(--lightgray);
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 5px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      width: 100%;
+      text-align: left;
+      max-width: 600px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: var(--textcolor);
+    }
+    
+    .form-group input[type="number"],
+    .form-group select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--bgcolor);
+      border-radius: 5px;
+      background-color: var(--bgcolor);
+      color: var(--textcolor);
+    }
+
+        .quality-presets {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      width: 100%;
+      max-width: 600px;
+    }
+    
+    .quality-preset {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid var(--darkgray);
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      background-color: var(--darkgray);
+      color: var(--textcolor);
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .quality-preset:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .quality-preset.selected {
+      background-color: var(--lightgray);
+      color: var(--bgcolor);
+      border-color: var(--lightgray);
+      font-weight: 600;
+    }
+    
+    .quality-preset::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .quality-preset.selected::after {
+      transform: scaleX(1);
+    }
+    
+    /* Advanced Options with Smooth Animation */
+
+    
+    .advanced-options.show {
+  max-height: 1000px; /* Large enough to fit all content */
+  opacity: 1;
+  transform: translateY(0);
+  padding: 15px;
+  pointer-events: auto;
+}
+    
+    .advanced-toggle {
+      background: none;
+      border: none;
+      color: var(--lightgray);
+      text-decoration: none;
+      cursor: pointer;
+      padding: 8px 5px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      width: 100%;
+      text-align: left;
+      max-width: 600px;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    
+    .advanced-toggle:hover {
+      color: var(--textcolor);
+    }
+    
+    .advanced-toggle i {
+      margin-left: auto;
+      transition: transform 0.3s ease;
+    }
+    
+    .advanced-toggle.active i {
+      transform: rotate(180deg);
+    }
+    
+    /* Slider Styles */
+    .slider-container {
+      margin-bottom: 20px;
+    }
+    
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    
+    .slider-label {
+      font-weight: 600;
+      color: var(--textcolor);
+    }
+    
+    .slider-value {
+      color: var(--lightgray);
+      font-weight: 500;
+    }
+    
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--bgcolor);
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--lightgray);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .slider::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+      background: var(--textcolor);
+    }
+    
+    .slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--lightgray);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .slider::-moz-range-thumb:hover {
+      transform: scale(1.1);
+      background: var(--textcolor);
+    }
+    
+    /* Resolution Select */
+    .select-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    
+    .select-container select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--bgcolor);
+      background-color: var(--bgcolor);
+      color: var(--textcolor);
+      font-family: 'Lexend', sans-serif;
+      font-size: 14px;
+      appearance: none;
+      transition: all 0.3s ease;
+    }
+    
+    .select-container select:focus {
+      outline: none;
+      border-color: var(--lightgray);
+    }
+    
+    .select-container::after {
+      content: '\25BC';
+      position: absolute;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      color: var(--textcolor);
+      font-size: 10px;
+      pointer-events: none;
+    }
+
+
+
   </style>
 </head>
 
@@ -320,9 +593,48 @@
   <div id="content">
     <h1 class="logo">visual<strong style="color: var(--lightgray);">AI</strong>se</h1>
 
-    <div id="promptArea">
+        <div id="promptArea">
       <div class="PromptGroup">
         <textarea id="promptInput" placeholder="Enter your prompt here..."></textarea>
+        
+        <div class="quality-presets">
+          <div class="quality-preset selected" data-quality="low">Low Quality</div>
+          <div class="quality-preset" data-quality="medium">Medium Quality</div>
+          <div class="quality-preset" data-quality="high">High Quality</div>
+        </div>
+        
+        <button class="advanced-toggle" id="advancedToggle">
+          Advanced Options
+          <i class='bx bx-chevron-down'></i>
+        </button>
+        
+        <div class="advanced-options" id="advancedOptions">
+          <div class="select-container">
+            <label for="resolution">Resolution</label>
+            <select id="resolution">
+              <option value="512x512">512 × 512</option>
+              <option value="768x768">768 × 768</option>
+              <option value="1024x1024" selected>1024 × 1024</option>
+            </select>
+          </div>
+          
+          <div class="slider-container">
+            <div class="slider-header">
+              <span class="slider-label">Guidance Scale</span>
+              <span class="slider-value" id="guidanceScaleValue">7.5</span>
+            </div>
+            <input type="range" min="1" max="20" step="0.1" value="7.5" class="slider" id="guidanceScale">
+          </div>
+          
+          <div class="slider-container">
+            <div class="slider-header">
+              <span class="slider-label">Inference Steps</span>
+              <span class="slider-value" id="inferenceStepsValue">30</span>
+            </div>
+            <input type="range" min="1" max="100" step="1" value="30" class="slider" id="inferenceSteps">
+          </div>
+        </div>
+        
         <button id="promptButton" class="Button">Generate Image</button>
       </div>
       <div id="loader"><div id="progressBar"></div></div>
@@ -331,6 +643,7 @@
 
     <div id="history"></div>
   </div>
+  
 
   <footer>
     <h1>Mohamed Boualamallah</h1>
@@ -352,14 +665,70 @@
       const percentageText = document.getElementById("percentageText");
       const history = document.getElementById("history");
       const promptInput = document.getElementById("promptInput");
+      const qualityPresets = document.querySelectorAll('.quality-preset');
+      const advancedToggle = document.getElementById('advancedToggle');
+      const advancedOptions = document.getElementById('advancedOptions');
+      const resolutionSelect = document.getElementById('resolution');
+      const guidanceScaleInput = document.getElementById('guidanceScale');
+      const inferenceStepsInput = document.getElementById('inferenceSteps');
 
       let pollingInterval = null;
       let startTime = null;
       let displayedProgress = 0;
+      
+      // Quality presets configuration
+      const qualitySettings = {
+        low: {
+          resolution: '512x512',
+          guidanceScale: 7,
+          inferenceSteps: 30
+        },
+        medium: {
+          resolution: '768x768',
+          guidanceScale: 10,
+          inferenceSteps: 50
+        },
+        high: {
+          resolution: '1024x1024',
+          guidanceScale: 12,
+          inferenceSteps: 70
+        }
+      };
+      
+      // Current quality selection
+      let currentQuality = 'medium';
+      
+      // Toggle advanced options
+      
+      
+      // Handle quality preset selection
+      qualityPresets.forEach(preset => {
+        preset.addEventListener('click', function() {
+          // Update UI
+          qualityPresets.forEach(p => p.classList.remove('selected'));
+          this.classList.add('selected');
+          
+          // Update current quality
+          currentQuality = this.dataset.quality;
+          
+          // If advanced options are hidden, update the hidden values
+          if (advancedOptions.style.display === 'none' || !advancedOptions.style.display) {
+            const settings = qualitySettings[currentQuality];
+            resolutionSelect.value = settings.resolution;
+            guidanceScaleInput.value = settings.guidanceScale;
+            inferenceStepsInput.value = settings.inferenceSteps;
+          }
+        });
+      });
 
       button.addEventListener("click", async () => {
         const prompt = promptInput.value.trim();
         if (!prompt) return;
+
+        // Get the current settings
+        const resolution = resolutionSelect.value;
+        const guidanceScale = parseFloat(guidanceScaleInput.value);
+        const inferenceSteps = parseInt(inferenceStepsInput.value);
 
         // Reset progress bar and start time
         displayedProgress = 0;
@@ -375,7 +744,13 @@
           const response = await fetch("/generate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt }),
+            body: JSON.stringify({ 
+              prompt,
+              resolution,
+              guidance_scale: guidanceScale,
+              num_inference_steps: inferenceSteps,
+              shift: 0
+            }),
           });
 
           if (!response.ok) {
@@ -517,7 +892,141 @@
     });
   </script>
 
+ <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // [Previous JavaScript remains the same until the new additions]
+      
+      // Get new elements
+      const qualityPresets = document.querySelectorAll('.quality-preset');
+      const advancedToggle = document.getElementById('advancedToggle');
+      const advancedOptions = document.getElementById('advancedOptions');
+      const resolutionSelect = document.getElementById('resolution');
+      const guidanceScaleInput = document.getElementById('guidanceScale');
+      const guidanceScaleValue = document.getElementById('guidanceScaleValue');
+      const inferenceStepsInput = document.getElementById('inferenceSteps');
+      const inferenceStepsValue = document.getElementById('inferenceStepsValue');
 
+      // Quality presets configuration with more detailed settings
+      const qualitySettings = {
+        low: {
+          resolution: '512x512',
+          guidanceScale: 5,
+          inferenceSteps: 30,
+          description: 'Faster generation, lower detail'
+        },
+        medium: {
+          resolution: '768x768',
+          guidanceScale: 10,
+          inferenceSteps: 50,
+          description: 'Balanced speed and quality'
+        },
+        high: {
+          resolution: '1024x1024',
+          guidanceScale: 15,
+          inferenceSteps: 80,
+          description: 'Highest quality, slower generation'
+        }
+      };
+      
+      // Current quality selection
+      let currentQuality = 'medium';
+      
+      // Update slider values display
+      guidanceScaleInput.addEventListener('input', () => {
+        guidanceScaleValue.textContent = guidanceScaleInput.value;
+        updateQualityPresetSelection();
+      });
+      
+      inferenceStepsInput.addEventListener('input', () => {
+        inferenceStepsValue.textContent = inferenceStepsInput.value;
+        updateQualityPresetSelection();
+      });
+      
+      // Toggle advanced options with animation
+      advancedToggle.addEventListener('click', function() {
+        this.classList.toggle('active');
+        advancedOptions.classList.toggle('show');
+        
+        // Animate chevron icon
+        const icon = this.querySelector('i');
+        icon.style.transform = this.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+      });
+      
+      // Handle quality preset selection with animation
+      qualityPresets.forEach(preset => {
+        preset.addEventListener('click', function() {
+          // Animate selection
+          qualityPresets.forEach(p => {
+            p.classList.remove('selected');
+            p.style.transform = '';
+          });
+          
+          this.classList.add('selected');
+          this.style.transform = 'translateY(-2px)';
+          
+          // Update current quality
+          currentQuality = this.dataset.quality;
+          
+          // Apply settings with animation
+          applyQualitySettings(currentQuality);
+        });
+      });
+      
+      function applyQualitySettings(quality) {
+        const settings = qualitySettings[quality];
+        
+        // Animate changes
+        resolutionSelect.style.opacity = '0';
+        guidanceScaleInput.style.opacity = '0';
+        inferenceStepsInput.style.opacity = '0';
+        
+        setTimeout(() => {
+          resolutionSelect.value = settings.resolution;
+          guidanceScaleInput.value = settings.guidanceScale;
+          inferenceStepsInput.value = settings.inferenceSteps;
+          
+          // Update displayed values
+          guidanceScaleValue.textContent = settings.guidanceScale;
+          inferenceStepsValue.textContent = settings.inferenceSteps;
+          
+          // Fade back in
+          resolutionSelect.style.opacity = '1';
+          guidanceScaleInput.style.opacity = '1';
+          inferenceStepsInput.style.opacity = '1';
+        }, 200);
+      }
+      
+      function updateQualityPresetSelection() {
+        // Check if current settings match any preset
+        const currentSettings = {
+          resolution: resolutionSelect.value,
+          guidanceScale: parseFloat(guidanceScaleInput.value),
+          inferenceSteps: parseInt(inferenceStepsInput.value)
+        };
+        
+        let matchedPreset = null;
+        
+        for (const [preset, settings] of Object.entries(qualitySettings)) {
+          if (settings.resolution === currentSettings.resolution &&
+              Math.abs(settings.guidanceScale - currentSettings.guidanceScale) < 0.5 &&
+              Math.abs(settings.inferenceSteps - currentSettings.inferenceSteps) < 5) {
+            matchedPreset = preset;
+            break;
+          }
+        }
+        
+        // Update UI
+        qualityPresets.forEach(preset => {
+          preset.classList.toggle('selected', preset.dataset.quality === matchedPreset);
+        });
+      }
+      
+      // Initialize with medium quality settings
+      applyQualitySettings('medium');
+
+      // [Rest of your existing JavaScript remains exactly the same]
+    });
+  </script>
 <script>
   const modeToggle = document.getElementById("modeToggle");
   const icon = modeToggle.querySelector("i");
