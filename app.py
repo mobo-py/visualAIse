@@ -4,10 +4,10 @@ import uuid
 import os
 from PIL import Image
 import threading
-import time  # For optional progress simulation
+import time
 
 app = Flask(__name__)
-client = Client("namelessai/HiDream-Unlimited")
+client = Client("NihalGazi/FLUX-Pro-Unlimited")
 
 GENERATED_DIR = os.path.join("static", "generated_images")
 os.makedirs(GENERATED_DIR, exist_ok=True)
@@ -15,33 +15,33 @@ os.makedirs(GENERATED_DIR, exist_ok=True)
 # Store task info: progress (0-100), image_url, error
 tasks = {}
 
-def generate_image_task(task_id, prompt, resolution, guidance_scale, steps, shift):
+def generate_image_task(task_id, prompt, width, height, seed, randomize, server_choice):
     try:
-        # Optional: simulate progress updates while waiting for model
-        # (If model predict is fast, you can skip this or just set progress = 0 initially)
-        for i in range(0, steps, max(1, steps // 10)):
-            tasks[task_id]["progress"] = int(i / steps * 100 * 0.5)  # e.g. up to 50%
-            time.sleep(0.1)  # adjust as needed
+        # Simulate progress while waiting
+        for i in range(0, 10):
+            tasks[task_id]["progress"] = int(i * 10 * 0.5)
+            time.sleep(0.1)
 
-        # Actual generation call (blocking)
-        # The API_name "/generate_image" matches the model endpoint
-        result_path = client.predict(
-            prompt=prompt,
-            resolution=resolution,
-            guidance_scale=guidance_scale,
-            num_inference_steps=steps,
-            shift=shift,
+        # Call the model and extract path from returned tuple
+        result_tuple = client.predict(
+            prompt,
+            width,
+            height,
+            seed,
+            randomize,
+            server_choice,
             api_name="/generate_image"
         )
 
-        if not os.path.exists(result_path):
+        image_path = result_tuple[0]  # Fix: result is a tuple (path, token)
+
+        if not os.path.exists(image_path):
             tasks[task_id]["error"] = "Image file not found from model"
             tasks[task_id]["progress"] = 100
             return
 
-        # Open generated image and add watermark
-        original_img = Image.open(result_path).convert("RGBA")
-
+        # Open and watermark the image
+        original_img = Image.open(image_path).convert("RGBA")
         watermark_path = os.path.join("static", "logo.png")
         if not os.path.exists(watermark_path):
             tasks[task_id]["error"] = "Watermark image not found"
@@ -49,27 +49,22 @@ def generate_image_task(task_id, prompt, resolution, guidance_scale, steps, shif
             return
 
         watermark = Image.open(watermark_path).convert("RGBA")
-
-        # Reduce watermark opacity to 50%
         alpha = watermark.split()[3].point(lambda p: int(p * 0.5))
         watermark.putalpha(alpha)
 
-        # Resize watermark if too wide (max 1/4 width of original image)
         wm_width, wm_height = watermark.size
         max_width = original_img.width // 4
         if wm_width > max_width:
             ratio = max_width / wm_width
-            new_size = (int(wm_width * ratio), int(wm_height * ratio))
-            watermark = watermark.resize(new_size, Image.LANCZOS)
+            watermark = watermark.resize((int(wm_width * ratio), int(wm_height * ratio)), Image.LANCZOS)
 
-        # Position watermark bottom-right with 10px padding
         position = (
             original_img.width - watermark.width - 10,
             original_img.height - watermark.height - 10
         )
         original_img.paste(watermark, position, watermark)
 
-        # Save final image as WEBP
+        # Save the final image
         filename = f"{uuid.uuid4().hex}.webp"
         output_path = os.path.join(GENERATED_DIR, filename)
         original_img.save(output_path, format="WEBP")
@@ -92,10 +87,11 @@ def generate_image():
     try:
         data = request.get_json()
         prompt = data.get("prompt", "").strip()
-        resolution = data.get("resolution", "1024x1024")
-        guidance_scale = float(data.get("guidance_scale", 10))
-        steps = int(data.get("num_inference_steps", 70))
-        shift = int(data.get("shift", 0))
+        width = int(data.get("width", 1280))
+        height = int(data.get("height", 1280))
+        seed = int(data.get("seed", 0))
+        randomize = bool(data.get("randomize", True))
+        server_choice = data.get("server_choice", "Google US Server")
 
         if not prompt:
             return jsonify({"error": "Prompt is required"}), 400
@@ -105,8 +101,8 @@ def generate_image():
 
         thread = threading.Thread(
             target=generate_image_task,
-            args=(task_id, prompt, resolution, guidance_scale, steps, shift),
-            daemon=True  # Daemon thread so it doesn't block exit
+            args=(task_id, prompt, width, height, seed, randomize, server_choice),
+            daemon=True
         )
         thread.start()
 
@@ -133,7 +129,5 @@ def progress():
 
 
 if __name__ == "__main__":
-    # Set threaded=True for concurrent requests handling
-    import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True, threaded=True)
