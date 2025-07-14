@@ -4,3 +4,4 @@ Flask-Login>=0.6.0
 gradio-client>=0.2.8
 Pillow>=9.0.0
 Werkzeug>=2.0.0
+gunicorn
