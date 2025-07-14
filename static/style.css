@@ -50,6 +50,9 @@ user-select: text;
 z-index: 2;
 box-sizing: border-box;
 overflow-x: visible;
+position: fixed;
+left: 0;
+bottom: 0;
 }
 
 /* Prevent horizontal scroll and ensure content fits viewport */
