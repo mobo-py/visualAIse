@@ -34,9 +34,9 @@ tasks = {}
 
 def generate_image_task(task_id, prompt, width, height, seed, randomize, server_choice, user_id):
     try:
-        # Simulate progress while waiting
+        # Simulate initial progress
         for i in range(0, 10):
-            tasks[task_id]["progress"] = int(i * 10 * 0.5)
+            tasks[task_id]["progress"] = int(i * 10 * 0.5)  # up to 45%
             time.sleep(0.1)
 
         # Call the model and extract path from returned tuple
@@ -115,8 +115,12 @@ def generate_image():
     try:
         data = request.get_json()
         prompt = data.get("prompt", "").strip()
-        width = int(data.get("width", 1280))
-        height = int(data.get("height", 1280))
+        resolution = data.get("resolution", "1024x1024")
+        try:
+            width, height = map(int, resolution.split("x"))
+        except Exception:
+            width, height = 1024, 1024
+
         seed = int(data.get("seed", 0))
         randomize = bool(data.get("randomize", True))
         server_choice = data.get("server_choice", "Google US Server")
@@ -148,10 +152,13 @@ def generate_image():
 @app.route("/progress")
 def progress():
     task_id = request.args.get("task_id")
+    print(f"Progress check for task_id={task_id}")
     if not task_id or task_id not in tasks:
+        print("Invalid or missing task_id")
         return jsonify({"error": "Invalid or missing task_id"}), 400
 
     task_info = tasks[task_id]
+    print(f"Progress: {task_info.get('progress')}, Error: {task_info.get('error')}")
     return jsonify({
         "progress": task_info.get("progress", 0),
         "image_url": task_info.get("image_url"),
