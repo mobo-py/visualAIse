@@ -1,26 +1,17 @@
-<<<<<<< HEAD
-from flask import Flask, render_template, request, jsonify
-=======
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
->>>>>>> d8edd3e (Your meaningful commit message here)
 from gradio_client import Client
 import uuid
 import os
 from PIL import Image
 import threading
 import time
-<<<<<<< HEAD
-=======
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import db, User, ImageHistory
 from werkzeug.security import generate_password_hash, check_password_hash
->>>>>>> d8edd3e (Your meaningful commit message here)
 
 app = Flask(__name__)
 client = Client("NihalGazi/FLUX-Pro-Unlimited")
 
-<<<<<<< HEAD
-=======
 app.config['SECRET_KEY'] = 'your-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db.init_app(app)
@@ -35,18 +26,13 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
->>>>>>> d8edd3e (Your meaningful commit message here)
 GENERATED_DIR = os.path.join("static", "generated_images")
 os.makedirs(GENERATED_DIR, exist_ok=True)
 
 # Store task info: progress (0-100), image_url, error
 tasks = {}
 
-<<<<<<< HEAD
-def generate_image_task(task_id, prompt, width, height, seed, randomize, server_choice):
-=======
 def generate_image_task(task_id, prompt, width, height, seed, randomize, server_choice, user_id):
->>>>>>> d8edd3e (Your meaningful commit message here)
     try:
         # Simulate progress while waiting
         for i in range(0, 10):
@@ -103,8 +89,6 @@ def generate_image_task(task_id, prompt, width, height, seed, randomize, server_
         tasks[task_id]["image_url"] = f"/static/generated_images/{filename}"
         tasks[task_id]["progress"] = 100
 
-<<<<<<< HEAD
-=======
         # Save generated image to user history if user_id was provided
         with app.app_context():
             if user_id:
@@ -116,7 +100,6 @@ def generate_image_task(task_id, prompt, width, height, seed, randomize, server_
                 db.session.add(new_history)
                 db.session.commit()
 
->>>>>>> d8edd3e (Your meaningful commit message here)
     except Exception as e:
         tasks[task_id]["error"] = str(e)
         tasks[task_id]["progress"] = 100
@@ -144,18 +127,12 @@ def generate_image():
         task_id = uuid.uuid4().hex
         tasks[task_id] = {"progress": 0, "image_url": None, "error": None}
 
-<<<<<<< HEAD
-        thread = threading.Thread(
-            target=generate_image_task,
-            args=(task_id, prompt, width, height, seed, randomize, server_choice),
-=======
         # Pass current_user.id if logged in; otherwise, pass None
         user_id = current_user.id if current_user.is_authenticated else None
 
         thread = threading.Thread(
             target=generate_image_task,
             args=(task_id, prompt, width, height, seed, randomize, server_choice, user_id),
->>>>>>> d8edd3e (Your meaningful commit message here)
             daemon=True
         )
         thread.start()
@@ -182,8 +159,6 @@ def progress():
     })
 
 
-<<<<<<< HEAD
-=======
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if current_user.is_authenticated:
@@ -232,7 +207,6 @@ def dashboard():
     return render_template("dashboard.html", history=history)
 
 
->>>>>>> d8edd3e (Your meaningful commit message here)
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True, threaded=True)
