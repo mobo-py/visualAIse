@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Visualaise</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/anim.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6637538583764393"
+     crossorigin="anonymous"></script>  
+
+  <style>
+    .result-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background-color: var(--card-bg);
+    }
+
+    .result-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .result-actions button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: var(--text-color);
+    }
+
+    .notif {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .notif.success { background-color: #4CAF50; }
+    .notif.error { background-color: #f44336; }
+  </style>
+</head>
+<body>
+  <ul class="background">
+    <li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+  </ul>
+
+  <div id="modeToggle" title="Toggle Dark/Light Mode">
+    <i class="bx bxs-sun"></i>
+  </div>
+
+  <header class="main-nav">
+    <div class="container">
+      <a href="{{ url_for('home') }}" class="nav-logo">Visual<span style="color: var(--accent);">AI</span>se</a>
+      <nav class="nav-links">
+        <a href="{{ url_for('home') }}">Home</a>
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('dashboard') }}">Dashboard</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+          <a href="{{ url_for('login') }}">Login</a>
+          <a href="{{ url_for('signup') }}">Sign Up</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <div id="content">
+    <h2>Your Image History</h2>
+    {% for entry in history %}
+      <div class="result-item fade-up">
+        <img src="{{ entry.image_url }}" alt="Generated Image" width="300">
+        <p class="prompt-text">{{ entry.prompt }}</p>
+        <div class="result-actions">
+          <button class="copy-btn fade-up" title="Copy Prompt"><i class='bx bx-copy'></i></button>
+          <button class="fullscreen-btn fade-up" title="Fullscreen"><i class='bx bx-fullscreen'></i></button>
+          <button class="download-btn fade-up" title="Download"><i class='bx bx-download'></i></button>
+        </div>
+        <!--<small>{{ entry.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>-->
+      </div>
+    {% else %}
+      <p>No images generated yet.</p>
+    {% endfor %}
+  </div>
+
+  <div class="notif" id="notif"></div>
+
+  <script>
+    function showNotif(message, type = "info") {
+      const notif = document.getElementById("notif");
+      notif.textContent = message;
+      notif.className = `notif ${type}`;
+      notif.style.opacity = "1";
+      setTimeout(() => {
+        notif.style.opacity = "0";
+      }, 2000);
+    }
+
+    document.querySelectorAll(".result-item").forEach(item => {
+      const prompt = item.querySelector(".prompt-text").innerText;
+      const img = item.querySelector("img");
+      const copyBtn = item.querySelector(".copy-btn");
+      const fullscreenBtn = item.querySelector(".fullscreen-btn");
+      const downloadBtn = item.querySelector(".download-btn");
+
+      copyBtn?.addEventListener("click", () => {
+        navigator.clipboard.writeText(prompt)
+          .then(() => showNotif("✅ Prompt copied", "success"))
+          .catch(() => showNotif("❌ Failed to copy prompt", "error"));
+      });
+
+      fullscreenBtn?.addEventListener("click", () => {
+        if (img.requestFullscreen) {
+          img.requestFullscreen();
+        } else if (img.webkitRequestFullscreen) {
+          img.webkitRequestFullscreen();
+        } else if (img.msRequestFullscreen) {
+          img.msRequestFullscreen();
+        }
+      });
+
+      downloadBtn?.addEventListener("click", () => {
+        try {
+          const a = document.createElement("a");
+          a.href = img.src;
+          a.download = "visualaise-image.png";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          showNotif("✅ Download started", "success");
+        } catch {
+          showNotif("❌ Download failed. Try manually.", "error");
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

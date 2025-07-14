@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up - Visualaise</title>
+  <link rel="icon" type="image/x-icon" href="/static/watermark.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/anim.css">
+  <link rel="stylesheet" href="/static/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6637538583764393"
+     crossorigin="anonymous"></script>
+
+  <style>
+    html, body, * {
+      font-family: 'Lexend' !important;
+    }
+    ::placeholder {
+      font-family: 'Lexend' !important;
+    }
+  </style>
+
+
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bgcolor: #1a1a1a;
+      --lightgray: #505153;
+      --darkgray: #2a2a2a;
+      --textcolor: #b6b6b6;
+      --footer: #101010;
+      --accent: #cfbfa3; /* sand beige accent */
+      --transition-speed: 0.3s;
+    }
+    
+    /* Global Styles using Lexend for everything */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Lexend', sans-serif;
+      background-color: var(--bgcolor);
+      color: var(--textcolor);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+      box-sizing: border-box;
+      transition: background var(--transition-speed) ease-out, color var(--transition-speed) ease-out;
+    }
+    
+    *, *::before, *::after {
+      box-sizing: inherit;
+      font-family: 'Lexend', sans-serif;
+    }
+    
+    /* Background Animation */
+    @keyframes animate {
+      0%{
+          transform: translateY(0) rotate(0deg);
+          opacity: 1;
+          border-radius: 0;
+      }
+      100%{
+          transform: translateY(-1000px) rotate(720deg);
+          opacity: 0;
+          border-radius: 50%;
+      }
+    }
+    
+    .background {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      margin: 0;
+      padding: 0;
+      background: #0b0b0b;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+      filter: blur(3px);
+    }
+    
+    .background li {
+      position: absolute;
+      display: block;
+      list-style: none;
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      animation: animate 16s linear infinite;
+    }
+    
+    .background li:nth-child(1) {
+      left: 18%;
+      width: 178px;
+      height: 178px;
+      bottom: -178px;
+      animation-delay: 1s;
+    }
+    .background li:nth-child(2) {
+      left: 32%;
+      width: 102px;
+      height: 102px;
+      bottom: -102px;
+      animation-delay: 5s;
+    }
+    .background li:nth-child(3) {
+      left: 65%;
+      width: 109px;
+      height: 109px;
+      bottom: -109px;
+      animation-delay: 6s;
+    }
+    .background li:nth-child(4) {
+      left: 22%;
+      width: 152px;
+      height: 152px;
+      bottom: -152px;
+      animation-delay: 9s;
+    }
+    .background li:nth-child(5) {
+      left: 46%;
+      width: 135px;
+      height: 135px;
+      bottom: -135px;
+      animation-delay: 5s;
+    }
+    .background li:nth-child(6) {
+      left: 25%;
+      width: 125px;
+      height: 125px;
+      bottom: -125px;
+      animation-delay: 21s;
+    }
+    .background li:nth-child(7) {
+      left: 89%;
+      width: 134px;
+      height: 134px;
+      bottom: -134px;
+      animation-delay: 1s;
+    }
+    
+    /* Mode Toggle Button */
+    #modeToggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 26px;
+      color: var(--textcolor);
+      cursor: pointer;
+      z-index: 1000;
+      transition: color var(--transition-speed) ease;
+    }
+    
+    #modeToggle:hover {
+      color: var(--lightgray);
+    }
+    
+    /* Content Container */
+    #content {
+      flex: 1;
+      padding: 20px;
+      z-index: 1;
+      position: relative;
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Authentication Form Styles */
+    .auth-container {
+      max-width: 400px;
+      margin: 80px auto;
+      background-color: var(--darkgray);
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .auth-title {
+      font-size: 30px;
+      color: var(--textcolor);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .form-label {
+      font-size: 16px;
+      margin-bottom: 5px;
+      color: var(--textcolor);
+    }
+    
+    .form-input {
+      padding: 10px;
+      border: 1px solid var(--lightgray);
+      border-radius: 5px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    .auth-button {
+      padding: 12px;
+      background-color: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    
+    .auth-button:hover {
+      background-color: #e1c9a8;
+      transform: translateY(-2px);
+    }
+    
+    .auth-note {
+      text-align: center;
+      font-size: 14px;
+      color: var(--textcolor);
+      margin-top: 15px;
+    }
+    
+    .auth-link {
+      color: var(--accent);
+      text-decoration: none;
+      transition: text-decoration 0.3s ease;
+    }
+    
+    .auth-link:hover {
+      text-decoration: underline;
+    }
+    
+    /* Footer Styles */
+    footer {
+      width: 100%;
+      min-width: 0;
+      position: relative;
+      background-color: var(--footer);
+      color: #fff;
+      padding: 20px 10px;
+      text-align: center;
+      z-index: 2;
+      box-sizing: border-box;
+      overflow-x: visible;
+      margin-top: 20px;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.5);
+    }
+    
+    footer .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    footer .footer-logo h1 {
+      font-size: 24px;
+      margin: 0;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    footer .social-icons {
+      margin-top: 8px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 24px;
+    }
+    
+    footer .social-icons a {
+      color: var(--textcolor);
+      transition: color 0.3s ease, transform 0.3s ease;
+      text-decoration: none;
+    }
+    
+    footer .social-icons a:hover {
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+    
+    footer .footer-bottom {
+      font-size: 14px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Ensure Boxicons uses its proper icon font */
+    
+    
+    /* Navigation Styles */
+    .main-nav {
+      position: relative;
+      z-index: 1000;
+      background-color: var(--darkgray);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .nav-logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--textcolor);
+      text-decoration: none;
+      display: inline-block;
+      padding: 15px 20px;
+      transition: color var(--transition-speed) ease;
+    }
+    
+    .nav-logo:hover {
+      color: var(--accent);
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 15px;
+      font-size: 16px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 15px 0;
+    }
+    
+    .nav-links a {
+      color: var(--textcolor);
+      text-decoration: none;
+      transition: color var(--transition-speed) ease, transform var(--transition-speed) ease;
+    }
+    
+    .nav-links a:hover {
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .main-nav {
+  position: relative;
+  z-index: 1000;
+  background-color: var(--darkgray);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  padding: 0 20px;
+}
+
+.main-nav .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.nav-links {
+  display: flex;
+  gap: 20px;
+  padding: 0;
+}
+
+.nav-logo {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--textcolor);
+  text-decoration: none;
+  padding: 20px 0;
+}
+
+  </style>
+</head>
+<body>
+  <ul class="background">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+  
+  <div id="modeToggle" title="Toggle Dark/Light Mode">
+    <i class="bx bxs-sun"></i>
+  </div>
+  
+  <header class="main-nav">
+    <div class="container">
+      <a href="{{ url_for('home') }}" class="nav-logo">Visual<span style="color: var(--accent);">AI</span>se</a>
+      <nav class="nav-links">
+        <a href="{{ url_for('home') }}">Home</a>
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('dashboard') }}">Dashboard</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+          <a href="{{ url_for('login') }}" font-family: 'Lexend'>Login</a>
+          <a href="{{ url_for('signup') }}" font-family: 'Lexend'>Sign Up</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+  
+  <div id="content" >
+    <div class="auth-container">
+      <h2 class="auth-title fade-up">Sign Up</h2>
+      <form class="auth-form fade-up" method="POST">
+        <div class="form-group fade-up">
+          <label for="username" class="form-label fade-up">Username</label>
+          <input type="text" name="username" id="username" class="form-input fade-up" required>
+        </div>
+        <div class="form-group fade-up">
+          <label for="password" class="form-label fade-up">Password</label>
+          <input type="password" name="password" id="password" class="form-input fade-up" required>
+        </div>
+        <button type="submit" class="auth-button fade-up">Sign Up</button>
+      </form>
+      <p class="auth-note fade-up">
+        Already have an account? 
+        <a href="{{ url_for('login') }}" class="auth-link fade-up">Login</a>
+      </p>
+    </div>
+  </div>
+<script src="/static/anim.js"></script>
+</body>
+</html>

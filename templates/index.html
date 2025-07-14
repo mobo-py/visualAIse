@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Visualaise</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" type="image/x-icon" href="/static/watermark.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/anim.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6637538583764393"
+     crossorigin="anonymous"></script>
+  
+
+
+</head>
+
+<body>
+  <ul class="background">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+
+  <div class = "fade-up" id="modeToggle" title="Toggle Dark/Light Mode">
+    <i class='bx bxs-sun'></i>
+  </div>
+
+  <!-- Add this header block before the #content container in each HTML file -->
+<header class="main-nav">
+  <div class="container">
+    <a href="{{ url_for('home') }}" class="nav-logo">Visual<span style="color: var(--accent);">AI</span>se</a>
+    <nav class="nav-links">
+      <a href="{{ url_for('home') }}">Home</a>
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('signup') }}">Sign Up</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+
+  <div id="content" >
+    <h1 class="logo fade-up">visual<strong style="color: var(--accent);">AI</strong>se</h1>
+
+        <div id="promptArea" class = "fade-up" >
+      <div class="PromptGroup">
+        <textarea id="promptInput" placeholder="Enter your prompt here..."></textarea>
+        
+        <div class="quality-presets">
+          <div class="quality-preset fade-up" data-quality="low">Low Quality</div>
+          <div class="quality-preset fade-up" data-quality="medium">Medium Quality</div>
+          <div class="quality-preset fade-up" data-quality="high">High Quality</div>
+        </div>
+        
+        <button class="advanced-toggle" id="advancedToggle">
+          Advanced Options
+          <i class='bx bx-chevron-down'></i>
+        </button>
+        
+        <div class="advanced-options" id="advancedOptions">
+          <div class="select-container">
+            <label for="resolution">Resolution</label>
+            <select id="resolution">
+              <option value="512x512">512 × 512</option>
+              <option value="768x768">768 × 768</option>
+              <option value="1024x1024" selected>1024 × 1024</option>
+            </select>
+          </div>
+          
+          <div class="slider-container">
+            <div class="slider-header">
+              <span class="slider-label">Guidance Scale</span>
+              <span class="slider-value" id="guidanceScaleValue">7.5</span>
+            </div>
+            <input type="range" min="1" max="20" step="0.1" value="7.5" class="slider" id="guidanceScale">
+          </div>
+          
+          <div class="slider-container">
+            <div class="slider-header">
+              <span class="slider-label">Inference Steps</span>
+              <span class="slider-value" id="inferenceStepsValue">30</span>
+            </div>
+            <input type="range" min="1" max="100" step="1" value="30" class="slider" id="inferenceSteps">
+          </div>
+        </div>
+        
+        <button id="promptButton" class="Button">Generate Image</button>
+      </div>
+      <div id="loader"><div id="progressBar"></div></div>
+      <p id="percentageText">0%</p>
+    </div>
+
+    <div id="history"></div>
+  </div>
+  
+
+  <footer>
+    <h1>Mohamed Boualamallah</h1>
+    <div class="social-icons">
+      <a href="https://github.com/mobo-py" target="_blank"><i class="bx bxl-github"></i></a>
+      <a href="mailto:mobopersonal@gmail.com"><i class="bx bx-envelope"></i></a>
+      <a href="tel:+97451316159"><i class="bx bx-phone"></i></a>
+      <a href="https://instagram.com/mxb_lm" target="_blank"><i class="bx bxl-instagram"></i></a>
+    </div>
+    <br />
+  </footer>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const button = document.getElementById("promptButton");
+      const loader = document.getElementById("loader");
+      const progressBar = document.getElementById("progressBar");
+      const percentageText = document.getElementById("percentageText");
+      const history = document.getElementById("history");
+      const promptInput = document.getElementById("promptInput");
+      const qualityPresets = document.querySelectorAll('.quality-preset');
+      const advancedToggle = document.getElementById('advancedToggle');
+      const advancedOptions = document.getElementById('advancedOptions');
+      const resolutionSelect = document.getElementById('resolution');
+      const guidanceScaleInput = document.getElementById('guidanceScale');
+      const inferenceStepsInput = document.getElementById('inferenceSteps');
+
+      let pollingInterval = null;
+      let startTime = null;
+      let displayedProgress = 0;
+      
+      // Quality presets configuration
+      const qualitySettings = {
+        low: {
+          resolution: '512x512',
+          guidanceScale: 7,
+          inferenceSteps: 30
+        },
+        medium: {
+          resolution: '768x768',
+          guidanceScale: 10,
+          inferenceSteps: 50
+        },
+        high: {
+          resolution: '1024x1024',
+          guidanceScale: 12,
+          inferenceSteps: 70
+        }
+      };
+      
+      // Current quality selection
+      let currentQuality = 'medium';
+      
+      // Toggle advanced options
+      
+      
+      // Handle quality preset selection
+      qualityPresets.forEach(preset => {
+        preset.addEventListener('click', function() {
+          // Update UI
+          qualityPresets.forEach(p => p.classList.remove('selected'));
+          this.classList.add('selected');
+          
+          // Update current quality
+          currentQuality = this.dataset.quality;
+          
+          // If advanced options are hidden, update the hidden values
+          if (advancedOptions.style.display === 'none' || !advancedOptions.style.display) {
+            const settings = qualitySettings[currentQuality];
+            resolutionSelect.value = settings.resolution;
+            guidanceScaleInput.value = settings.guidanceScale;
+            inferenceStepsInput.value = settings.inferenceSteps;
+          }
+        });
+      });
+
+      button.addEventListener("click", async () => {
+        const prompt = promptInput.value.trim();
+        if (!prompt) return;
+
+        // Get the current settings
+        const resolution = resolutionSelect.value;
+        const guidanceScale = parseFloat(guidanceScaleInput.value);
+        const inferenceSteps = parseInt(inferenceStepsInput.value);
+
+        // Reset progress bar and start time
+        displayedProgress = 0;
+        progressBar.style.width = "0%";
+        percentageText.textContent = "0%";
+        percentageText.style.display = "block";
+        loader.style.display = "block";
+        button.disabled = true;
+        startTime = Date.now();
+
+        try {
+          // Start generation and get task_id
+          const response = await fetch("/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+              prompt,
+              resolution,
+              guidance_scale: guidanceScale,
+              num_inference_steps: inferenceSteps,
+              shift: 0
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to start generation.");
+          }
+
+          const data = await response.json();
+          if (!data.task_id) {
+            throw new Error("No task ID received.");
+          }
+
+          const taskId = data.task_id;
+
+          // Poll progress every second
+          pollingInterval = setInterval(async () => {
+            try {
+              const progressResponse = await fetch(`/progress?task_id=${taskId}`);
+              if (!progressResponse.ok) {
+                throw new Error("Failed to get progress.");
+              }
+              const progressData = await progressResponse.json();
+
+              if (progressData.error) {
+                throw new Error(progressData.error);
+              }
+
+              const backendProgress = progressData.progress || 0;
+              const imageUrl = progressData.image_url || null;
+
+              // Smoothly increment displayedProgress toward backendProgress, but never backward
+              if (backendProgress > displayedProgress) {
+                // Cap displayed progress to max 95% until 100% received
+                const targetProgress =
+                  backendProgress < 100 ? Math.min(backendProgress, 95) : 100;
+
+                const increment = (targetProgress - displayedProgress) / 3; // smooth increments over ~3 polls
+                displayedProgress += increment;
+                if (displayedProgress > targetProgress) displayedProgress = targetProgress;
+              }
+
+              // Update UI
+              progressBar.style.width = displayedProgress + "%";
+              percentageText.textContent = Math.floor(displayedProgress) + "%";
+
+              if (backendProgress >= 100 && imageUrl) {
+                clearInterval(pollingInterval);
+                displayedProgress = 100;
+                progressBar.style.width = "100%";
+                percentageText.textContent = "100%";
+
+                // Calculate elapsed time
+                const elapsedSeconds = ((Date.now() - startTime) / 1000).toFixed(1);
+
+                addResultItem(prompt, imageUrl, elapsedSeconds);
+
+                loader.style.display = "none";
+                percentageText.style.display = "none";
+                button.disabled = false;
+                promptInput.value = "";
+              }
+            } catch (err) {
+              clearInterval(pollingInterval);
+              alert("Error during progress polling: " + err.message);
+              loader.style.display = "none";
+              percentageText.style.display = "none";
+              button.disabled = false;
+            }
+          }, 1000);
+        } catch (err) {
+          alert("Error starting generation: " + err.message);
+          loader.style.display = "none";
+          percentageText.style.display = "none";
+          button.disabled = false;
+        }
+      });
+
+      function addResultItem(prompt, imageUrl, elapsedSeconds) {
+        const div = document.createElement("div");
+        div.className = "result-item";
+
+        div.innerHTML = `
+          <img src="${imageUrl}" alt="Generated Image" loading="lazy" />
+          <div class="result-info">
+            <span class="prompt-text">${escapeHtml(prompt)}</span>
+            <div class="result-actions">
+              <button class="copy-btn" title="Copy Prompt"><i class='bx bx-copy'></i></button>
+              <button class="fullscreen-btn" title="Fullscreen"><i class='bx bx-fullscreen'></i></button>
+              <button class="download-btn" title="Download"><i class='bx bx-download'></i></button>
+            </div>
+          </div>
+          <div class="generation-time">Generated in ${elapsedSeconds} seconds</div>
+        `;
+
+        // Attach event listeners to buttons
+        const copyBtn = div.querySelector(".copy-btn");
+        copyBtn.addEventListener("click", () => {
+          navigator.clipboard.writeText(prompt).then(() => {
+            copyBtn.title = "Copied!";
+            setTimeout(() => (copyBtn.title = "Copy Prompt"), 1500);
+          });
+        });
+
+        const fullscreenBtn = div.querySelector(".fullscreen-btn");
+        fullscreenBtn.addEventListener("click", () => {
+          const img = div.querySelector("img");
+          if (img.requestFullscreen) {
+            img.requestFullscreen();
+          } else if (img.webkitRequestFullscreen) { /* Safari */
+            img.webkitRequestFullscreen();
+          } else if (img.msRequestFullscreen) { /* IE11 */
+            img.msRequestFullscreen();
+          }
+        });
+
+        const downloadBtn = div.querySelector(".download-btn");
+        downloadBtn.addEventListener("click", () => {
+          const a = document.createElement("a");
+          a.href = imageUrl;
+          a.download = "visualaise-image.png";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
+
+        history.prepend(div);
+      }
+
+      // Simple escape function to avoid HTML injection in prompt display
+      function escapeHtml(text) {
+        const map = {
+          '&': "&amp;",
+          '<': "&lt;",
+          '>': "&gt;",
+          '"': "&quot;",
+          "'": "&#039;"
+        };
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+      }
+    });
+  </script>
+
+ <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // [Previous JavaScript remains the same until the new additions]
+      
+      // Get new elements
+      const qualityPresets = document.querySelectorAll('.quality-preset');
+      const advancedToggle = document.getElementById('advancedToggle');
+      const advancedOptions = document.getElementById('advancedOptions');
+      const resolutionSelect = document.getElementById('resolution');
+      const guidanceScaleInput = document.getElementById('guidanceScale');
+      const guidanceScaleValue = document.getElementById('guidanceScaleValue');
+      const inferenceStepsInput = document.getElementById('inferenceSteps');
+      const inferenceStepsValue = document.getElementById('inferenceStepsValue');
+
+      // Quality presets configuration with more detailed settings
+      const qualitySettings = {
+        low: {
+          resolution: '512x512',
+          guidanceScale: 5,
+          inferenceSteps: 30,
+          description: 'Faster generation, lower detail'
+        },
+        medium: {
+          resolution: '768x768',
+          guidanceScale: 10,
+          inferenceSteps: 50,
+          description: 'Balanced speed and quality'
+        },
+        high: {
+          resolution: '1024x1024',
+          guidanceScale: 15,
+          inferenceSteps: 80,
+          description: 'Highest quality, slower generation'
+        }
+      };
+      
+      // Current quality selection
+      let currentQuality = 'medium';
+      
+      // Update slider values display
+      guidanceScaleInput.addEventListener('input', () => {
+        guidanceScaleValue.textContent = guidanceScaleInput.value;
+        updateQualityPresetSelection();
+      });
+      
+      inferenceStepsInput.addEventListener('input', () => {
+        inferenceStepsValue.textContent = inferenceStepsInput.value;
+        updateQualityPresetSelection();
+      });
+      
+      // Toggle advanced options with animation
+      advancedToggle.addEventListener('click', function() {
+        this.classList.toggle('active');
+        advancedOptions.classList.toggle('show');
+        
+        // Animate chevron icon
+        const icon = this.querySelector('i');
+        icon.style.transform = this.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+      });
+      
+      // Handle quality preset selection with animation
+      qualityPresets.forEach(preset => {
+        preset.addEventListener('click', function() {
+          // Animate selection
+          qualityPresets.forEach(p => {
+            p.classList.remove('selected');
+            p.style.transform = '';
+          });
+          
+          this.classList.add('selected');
+          this.style.transform = 'translateY(-2px)';
+          
+          // Update current quality
+          currentQuality = this.dataset.quality;
+          
+          // Apply settings with animation
+          applyQualitySettings(currentQuality);
+        });
+      });
+      
+      function applyQualitySettings(quality) {
+        const settings = qualitySettings[quality];
+        
+        // Animate changes
+        resolutionSelect.style.opacity = '0';
+        guidanceScaleInput.style.opacity = '0';
+        inferenceStepsInput.style.opacity = '0';
+        
+        setTimeout(() => {
+          resolutionSelect.value = settings.resolution;
+          guidanceScaleInput.value = settings.guidanceScale;
+          inferenceStepsInput.value = settings.inferenceSteps;
+          
+          // Update displayed values
+          guidanceScaleValue.textContent = settings.guidanceScale;
+          inferenceStepsValue.textContent = settings.inferenceSteps;
+          
+          // Fade back in
+          resolutionSelect.style.opacity = '1';
+          guidanceScaleInput.style.opacity = '1';
+          inferenceStepsInput.style.opacity = '1';
+        }, 200);
+      }
+      
+      function updateQualityPresetSelection() {
+        // Check if current settings match any preset
+        const currentSettings = {
+          resolution: resolutionSelect.value,
+          guidanceScale: parseFloat(guidanceScaleInput.value),
+          inferenceSteps: parseInt(inferenceStepsInput.value)
+        };
+        
+        let matchedPreset = null;
+        
+        for (const [preset, settings] of Object.entries(qualitySettings)) {
+          if (settings.resolution === currentSettings.resolution &&
+              Math.abs(settings.guidanceScale - currentSettings.guidanceScale) < 0.5 &&
+              Math.abs(settings.inferenceSteps - currentSettings.inferenceSteps) < 5) {
+            matchedPreset = preset;
+            break;
+          }
+        }
+        
+        // Update UI
+        qualityPresets.forEach(preset => {
+          preset.classList.toggle('selected', preset.dataset.quality === matchedPreset);
+        });
+      }
+      
+      // Initialize with medium quality settings
+      applyQualitySettings('medium');
+
+      // [Rest of your existing JavaScript remains exactly the same]
+    });
+  </script>
+<script>
+  const modeToggle = document.getElementById("modeToggle");
+  const icon = modeToggle.querySelector("i");
+  const body = document.body;
+
+  // Toggle mode and icon
+  modeToggle.addEventListener("click", () => {
+    body.classList.toggle("light-mode");
+    icon.className = body.classList.contains("light-mode") ? "bx bxs-moon" : "bx bxs-sun";
+  });
+</script>
+<script src="/static/anim.js"></script>
+
+
+</body>
+
+</html>
