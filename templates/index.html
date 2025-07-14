@@ -4,11 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Visualaise</title>
+<<<<<<< HEAD
+=======
+  <link rel="stylesheet" href="/static/style.css">
+>>>>>>> d8edd3e (Your meaningful commit message here)
   <link rel="icon" type="image/x-icon" href="/static/watermark.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet" />
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+<<<<<<< HEAD
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6637538583764393"
      crossorigin="anonymous"></script>
 
@@ -596,13 +601,65 @@
     <h1 class="logo">visual<strong style="color: var(--lightgray);">AI</strong>se</h1>
 
         <div id="promptArea">
+=======
+  <link rel="stylesheet" href="/static/anim.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6637538583764393"
+     crossorigin="anonymous"></script>
+  
+
+
+</head>
+
+<body>
+  <ul class="background">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+
+  <div class = "fade-up" id="modeToggle" title="Toggle Dark/Light Mode">
+    <i class='bx bxs-sun'></i>
+  </div>
+
+  <!-- Add this header block before the #content container in each HTML file -->
+<header class="main-nav">
+  <div class="container">
+    <a href="{{ url_for('home') }}" class="nav-logo">Visual<span style="color: var(--accent);">AI</span>se</a>
+    <nav class="nav-links">
+      <a href="{{ url_for('home') }}">Home</a>
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('signup') }}">Sign Up</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+
+  <div id="content" >
+    <h1 class="logo fade-up">visual<strong style="color: var(--accent);">AI</strong>se</h1>
+
+        <div id="promptArea" class = "fade-up" >
+>>>>>>> d8edd3e (Your meaningful commit message here)
       <div class="PromptGroup">
         <textarea id="promptInput" placeholder="Enter your prompt here..."></textarea>
         
         <div class="quality-presets">
+<<<<<<< HEAD
           <div class="quality-preset selected" data-quality="low">Low Quality</div>
           <div class="quality-preset" data-quality="medium">Medium Quality</div>
           <div class="quality-preset" data-quality="high">High Quality</div>
+=======
+          <div class="quality-preset fade-up" data-quality="low">Low Quality</div>
+          <div class="quality-preset fade-up" data-quality="medium">Medium Quality</div>
+          <div class="quality-preset fade-up" data-quality="high">High Quality</div>
+>>>>>>> d8edd3e (Your meaningful commit message here)
         </div>
         
         <button class="advanced-toggle" id="advancedToggle">
@@ -1040,6 +1097,14 @@
     icon.className = body.classList.contains("light-mode") ? "bx bxs-moon" : "bx bxs-sun";
   });
 </script>
+<<<<<<< HEAD
 
 </body>
+=======
+<script src="/static/anim.js"></script>
+
+
+</body>
+
+>>>>>>> d8edd3e (Your meaningful commit message here)
 </html>
